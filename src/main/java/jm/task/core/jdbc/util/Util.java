@@ -34,7 +34,13 @@ public class Util {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration()
-                        .configure("hibernate.cfg.xml")
+                        .setProperty("hibernate.connection.driver-class", DB_DRIVER)
+                        .setProperty("hibernate.connection.url", DB_URL)
+                        .setProperty("hibernate.connection.username", DB_USERNAME)
+                        .setProperty("hibernate.connection.password", DB_PASSWORD)
+                        .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect")
+                        .setProperty("hibernate.show_sql", "true")
+                        .setProperty("hibernate.hbm2ddl.auto", "update")
                         .addAnnotatedClass(User.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
@@ -43,8 +49,10 @@ public class Util {
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
             } catch (Exception e) {
+                e.getMessage();
                 e.printStackTrace();
                 System.err.println("ERROR");
+                throw new RuntimeException("Something went wrong");
             }
         }
         return sessionFactory;
